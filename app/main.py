@@ -3,6 +3,9 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from app.routers import rsvp, memory
+from app.core.logger import get_logger
+
+logger = get_logger("app.startup")
 
 load_dotenv()
 
@@ -25,3 +28,7 @@ app.include_router(memory.router, prefix="/api/memory", tags=["Memory Wall"])
 @app.get("/")
 def root():
     return {"status": "Chotobela 5 API running 🎈"}
+
+@app.on_event("startup")
+def startup_event():
+    logger.info("Chotobela 5 API started successfully")
