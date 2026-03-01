@@ -1,0 +1,8 @@
+{
+    "python.defaultInterpreterPath": "C:\\ProgramData\\anaconda3\\python.exe",
+    "python.terminal.activateEnvironment": true,
+    "python.analysis.extraPaths": [
+        "C:\\ProgramData\\anaconda3\\Lib\\site-packages"
+    ],
+    "pyre.pythonExecutable": "C:\\ProgramData\\anaconda3\\python.exe"
+}
