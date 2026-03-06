@@ -9,7 +9,7 @@ const content = {
     time: "6 PM onwards",
     venue:
       "Community Hall, SP Joyville Annex, Shewalewadi, Pune Solapur Highway, Pune – 412307",
-    rsvpTitle: "RSVP",
+    rsvpTitle: "Count Me In! 🎉",
     name: "Name",
     mobile: "Mobile Number",
     submit: "Submit",
@@ -34,6 +34,16 @@ const content = {
     audioPreview: "Preview your audio",
     maxDuration2: "Max 2 minutes",
     maxDuration3: "Max 3 minutes",
+    viewEvent: "🎉 View Event Details",
+    backToMemories: "← Back to Memory Wall",
+    adults: "Number of Adults",
+    kids: "Number of Kids",
+    foodPref: "Food Preference",
+    veg: "🥦 Veg",
+    nonveg: "🍗 Non-Veg",
+    note: "Any special note (optional)",
+    submitting: "Submitting...",
+    openMaps: "Open in Google Maps",
   },
 
   bn: {
@@ -46,7 +56,7 @@ const content = {
     time: "সন্ধ্যা ৬টা থেকে",
     venue:
       "কমিউনিটি হল, এসপি জয়ভিল অ্যানেক্স, শেওয়ালেওয়াদি, পুনে সোলাপুর হাইওয়ে, পুনে – ৪১২৩০৭",
-    rsvpTitle: "আপনার উপস্থিতি নিশ্চিত করুন",
+    rsvpTitle: "আসছি আমি! 🎉",
     name: "নাম",
     mobile: "মোবাইল নম্বর",
     submit: "জমা দিন",
@@ -71,6 +81,16 @@ const content = {
     audioPreview: "আপনার অডিও শুনুন",
     maxDuration2: "সর্বোচ্চ ২ মিনিট",
     maxDuration3: "সর্বোচ্চ ৩ মিনিট",
+    viewEvent: "🎉 অনুষ্ঠানের বিবরণ দেখুন",
+    backToMemories: "← স্মৃতির দেয়ালে ফিরুন",
+    adults: "প্রাপ্তবয়স্কদের সংখ্যা",
+    kids: "শিশুদের সংখ্যা",
+    foodPref: "খাবারের পছন্দ",
+    veg: "🥦 নিরামিষ",
+    nonveg: "🍗 আমিষ",
+    note: "বিশেষ কোনো নোট (ঐচ্ছিক)",
+    submitting: "জমা দেওয়া হচ্ছে...",
+    openMaps: "গুগল ম্যাপে খুলুন",
   },
 };
 

@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Camera, ImagePlus, Send, Video, Mic, Square, Upload } from "lucide-react";
 import API from "../services/api";
 import paperTexture from "../assets/paper-texture.png";
+import { useMusic } from "../context/MusicContext";
 
 const BASE_URL = API.defaults.baseURL.replace("/api", "");
 
@@ -43,14 +44,16 @@ function VideoRecorderTab({ text, guestName, message, onSuccess }) {
   const mediaRef = useRef(null);
   const previewRef = useRef(null);
   const chunksRef = useRef([]);
+  const { muteBgMusic, unmuteBgMusic } = useMusic();
 
   const stopRecording = useCallback(() => {
     setRecording(false);
+    unmuteBgMusic();
     if (mediaRef.current) {
       mediaRef.current.stop();
       mediaRef.current.stream.getTracks().forEach(t => t.stop());
     }
-  }, []);
+  }, [unmuteBgMusic]);
 
   const { elapsed, start: startTimer, stop: stopTimer, fmt } = useTimer(120, stopRecording);
 
@@ -70,6 +73,7 @@ function VideoRecorderTab({ text, guestName, message, onSuccess }) {
       mediaRef.current = mr;
       mr.start(200);
       setRecording(true);
+      muteBgMusic();
       startTimer();
     } catch {
       alert("Camera access denied or not available.");
@@ -132,14 +136,16 @@ function AudioRecorderTab({ text, guestName, message, onSuccess }) {
   const [loading, setLoading] = useState(false);
   const mediaRef = useRef(null);
   const chunksRef = useRef([]);
+  const { muteBgMusic, unmuteBgMusic } = useMusic();
 
   const stopRecording = useCallback(() => {
     setRecording(false);
+    unmuteBgMusic();
     if (mediaRef.current) {
       mediaRef.current.stop();
       mediaRef.current.stream.getTracks().forEach(t => t.stop());
     }
-  }, []);
+  }, [unmuteBgMusic]);
 
   const { elapsed, start: startTimer, stop: stopTimer, fmt } = useTimer(180, stopRecording);
 
@@ -157,6 +163,7 @@ function AudioRecorderTab({ text, guestName, message, onSuccess }) {
       mediaRef.current = mr;
       mr.start(200);
       setRecording(true);
+      muteBgMusic();
       startTimer();
     } catch {
       alert("Microphone access denied or not available.");
@@ -264,7 +271,7 @@ function MemoryCard({ m, i }) {
 }
 
 // ─── Main component ──────────────────────────────────────────────────
-export default function MemoryWall({ text }) {
+export default function MemoryWall({ text, onNavigateToEvent }) {
   const [memories, setMemories] = useState([]);
   const [guestName, setGuestName] = useState("");
   const [message, setMessage] = useState("");
@@ -318,6 +325,24 @@ export default function MemoryWall({ text }) {
         <Camera className="w-10 h-10 md:w-12 md:h-12" />
         {text.memoryWallTitle}
       </motion.h3>
+
+      {/* Event Details Button */}
+      <motion.div
+        className="flex justify-center mb-10"
+        initial={{ opacity: 0, y: 10 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ delay: 0.15 }}
+      >
+        <motion.button
+          onClick={onNavigateToEvent}
+          className="btn-primary px-8 py-3 text-lg flex items-center gap-2 shadow-lg"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.97 }}
+        >
+          {text.viewEvent}
+        </motion.button>
+      </motion.div>
 
       {/* Upload Form */}
       <motion.div
