@@ -1,12 +1,14 @@
-import BackgroundMusic from "./components/BackgroundMusic";
 import { useState } from "react";
 import Landing from "./components/Landing";
 import Invitation from "./components/Invitation";
 import RSVPForm from "./components/RSVPForm";
 import MemoryWall from "./components/MemoryWall";
-import LanguageToggle from "./components/LanguageToggle";
+import FloatingControls from "./components/FloatingControls";
+// import LanguageToggle from "./components/LanguageToggle";
+// import BackgroundMusic from "./components/BackgroundMusic";
+import Decorations from "./components/Decorations";
 import content from "./i18n/content";
-import AdminDashboard from "./components/AdminDashboard";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function App() {
   const [entered, setEntered] = useState(false);
@@ -14,24 +16,37 @@ export default function App() {
 
   const text = content[lang];
 
+  // 🔐 Admin route (unchanged)
   if (window.location.pathname === "/admin") {
     return <AdminDashboard />;
   }
-  
-  return (
-    <>
-      <BackgroundMusic />
-      <LanguageToggle lang={lang} setLang={setLang} />
 
-      {!entered ? (
-        <Landing onEnter={() => setEntered(true)} text={text} />
-      ) : (
-        <>
-          <Invitation text={text} />
-          <RSVPForm text={text} />
-          <MemoryWall />
-        </>
-      )}
-    </>
+  return (
+    <div className="max-w-md mx-auto min-h-screen relative bg-white/40 shadow-2xl border-x border-primary/10">
+      <Decorations />
+      <FloatingControls lang={lang} setLang={setLang} />
+
+      {/* ✅ Render ONCE */}
+      {/* <BackgroundMusic />
+      <LanguageToggle lang={lang} setLang={setLang} /> */}
+
+      <AnimatePresence mode="wait">
+        {!entered ? (
+          <Landing key="landing" onEnter={() => setEntered(true)} text={text} />
+        ) : (
+          <motion.div
+            key="main-content"
+            className="pb-24"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            {/* <Invitation text={text} />
+            <RSVPForm text={text} /> */}
+            <MemoryWall text={text} />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 }

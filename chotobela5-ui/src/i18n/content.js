@@ -14,6 +14,13 @@ const content = {
     mobile: "Mobile Number",
     submit: "Submit",
     thankYou: "Thank you! See you soon ❤️",
+    memoryWallTitle: "Memory Wall",
+    yourName: "Your Name",
+    yourWishes: "Your Wishes",
+    upload: "Click to upload",
+    uploadHint: "or drag and drop",
+    shareMemory: "Share Memory",
+    uploading: "Uploading...",
   },
 
   bn: {
@@ -31,6 +38,13 @@ const content = {
     mobile: "মোবাইল নম্বর",
     submit: "জমা দিন",
     thankYou: "ধন্যবাদ! শীঘ্রই দেখা হবে ❤️",
+    memoryWallTitle: "স্মৃতির দেয়াল",
+    yourName: "আপনার নাম",
+    yourWishes: "আপনার শুভেচ্ছা",
+    upload: "আপলোড করতে ক্লিক করুন",
+    uploadHint: "বা টেনে এনে ছাড়ুন",
+    shareMemory: "স্মৃতি শেয়ার করুন",
+    uploading: "আপলোড হচ্ছে...",
   },
 };
 

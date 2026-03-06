@@ -4,7 +4,12 @@ export default {
     "./src/**/*.{js,jsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        bengali: ["'Baloo Da 2'", "cursive"],
+        english: ["'Playfair Display'", "serif"],
+      },
+    },
   },
   plugins: [],
 }

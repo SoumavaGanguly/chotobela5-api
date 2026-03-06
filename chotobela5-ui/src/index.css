@@ -2,7 +2,107 @@
 @tailwind components;
 @tailwind utilities;
 
+@theme {
+  --font-bengali: "Baloo Da 2", cursive;
+  --font-english: "Playfair Display", serif;
+}
+
+@layer base {
+  :root {
+    --color-primary: #8B0000;
+    --color-primary-light: #A52A2A;
+    --color-secondary: #D4AF37;
+    --color-background: #F5E6CC;
+    --color-text: #1C1C1C;
+    --color-text-light: #4A4A4A;
+    --color-surface: rgba(255, 255, 255, 0.9);
+  }
+}
+
 body {
-  background-color: #bea270;
-  font-family: serif;
+  background-color: var(--color-background);
+  background-image: url("./assets/paper-texture.png");
+  background-size: cover;
+  background-attachment: fixed;
+  background-blend-mode: multiply;
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom utilities for smooth transitions and glassmorphism */
+@layer utilities {
+  .glass-card {
+    background-color: rgb(75 48 48 / 24%);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    border-radius: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .heading-primary {
+    font-family: var(--font-bengali);
+    color: var(--color-primary);
+  }
+
+  .heading-secondary {
+    font-family: var(--font-english);
+    color: var(--color-secondary);
+  }
+
+  .btn-primary {
+    background-color: var(--color-primary);
+    color: white;
+    font-family: var(--font-english);
+    padding: 0.75rem 1.5rem;
+    border-radius: 9999px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+  }
+
+  .btn-primary:hover {
+    background-color: var(--color-primary-light);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    transform: translateY(-0.25rem);
+  }
+
+  .btn-primary:active {
+    transform: translateY(0);
+  }
+
+  .btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .input-field {
+    width: 90%;
+    border: 3px solid #cc8e08;
+    border-radius: 1.75rem;
+    padding: 0.75rem 1rem;
+    transition: all 0.2s ease;
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    font-size: 1.125rem;
+    font-family: var(--font-bengali), 'Special Elite', cursive, 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-weight: 700;
+    color: #000;
+    background-image: url("./assets/illustrations/textbox.png");
+    background-size: cover;
+    background-attachment: fixed;
+    background-blend-mode: multiply;
+    opacity: 0.75;
+  }
+
+  .input-field:focus {
+    --ring-color: var(--color-primary);
+    box-shadow: 0 0 0 5px rgb(206, 126, 6), 0 0 0 4px var(--ring-color);
+    border-color: transparent;
+  }
+
+  .input-field::placeholder {
+    color: #000000;
+    font-weight: 700;
+    opacity: 1;
+  }
 }

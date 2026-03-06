@@ -30,8 +30,12 @@ export default function BackgroundMusic() {
 
       <button
         onClick={toggleMusic}
-        className="fixed bottom-4 right-4 z-50 bg-black text-white px-4 py-2 rounded-full shadow-lg"
-      >
+        className="px-4 py-2 rounded-full shadow
+        bg-[#f4e6c3cc] backdrop-blur
+        border border-[#8b6f3d]
+        text-[#4a2c0f]
+        hover:bg-[#f0dfb4]"
+      >      
         {playing ? "🔇 Mute" : "🎵 Play"}
       </button>
     </>
