@@ -1,8 +1,6 @@
 {
   "projects": {
-    "default": "chotobela-5",
-    "chotobela5": "chotobela-5",
-    "chotobela-5": "chotobela-5"
+    "default": "chotobela-5"
   },
   "targets": {},
   "etags": {}

@@ -288,7 +288,7 @@ export default function MemoryWall({ text, onNavigateToEvent }) {
   const [showSlider, setShowSlider] = useState(false);
 
   const fetchMemories = async () => {
-    const res = await API.get("/memory");
+    const res = await API.get("/memory/");
     setMemories(res.data);
   };
 
@@ -302,7 +302,7 @@ export default function MemoryWall({ text, onNavigateToEvent }) {
     fd.append("image", image);
     try {
       setLoading(true);
-      await API.post("/memory", fd);
+      await API.post("/memory/", fd);
       alert("Thank you for your lovely memory ❤️");
       setGuestName(""); setMessage(""); setImage(null);
       fetchMemories();
