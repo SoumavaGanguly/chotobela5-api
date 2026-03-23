@@ -4,8 +4,16 @@ from typing import Optional, List
 import shutil
 import uuid
 import os
+import cloudinary
+import cloudinary.uploader
 from app.core.logger import get_logger
 from app.database.deps import get_db
+
+cloudinary.config(
+    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME", "do8rnam8e"),
+    api_key=os.getenv("CLOUDINARY_API_KEY", "297362597741494"),
+    api_secret=os.getenv("CLOUDINARY_API_SECRET", "Qfd09na7RxrF9PwutyxWV187aEw")
+)
 from app.models.memory import Memory as MemoryModel
 from app.schemas.memory import MemoryResponse
 
@@ -25,11 +33,8 @@ def upload_memory(
 ):
     image_url = None
     if image:
-        filename = f"{uuid.uuid4()}_{image.filename}"
-        path = f"{UPLOAD_DIR}/{filename}"
-        with open(path, "wb") as buffer:
-            shutil.copyfileobj(image.file, buffer)
-        image_url = path
+        result = cloudinary.uploader.upload(image.file, resource_type="image")
+        image_url = result.get("secure_url")
 
     db_memory = MemoryModel(
         guest_name=guest_name,
@@ -54,16 +59,14 @@ def upload_video_memory(
     video: UploadFile = File(...),
     db: Session = Depends(get_db)
 ):
-    filename = f"{uuid.uuid4()}_{video.filename}"
-    path = f"{UPLOAD_DIR}/{filename}"
-    with open(path, "wb") as buffer:
-        shutil.copyfileobj(video.file, buffer)
+    result = cloudinary.uploader.upload_large(video.file, resource_type="video")
+    video_url = result.get("secure_url")
 
     db_memory = MemoryModel(
         guest_name=guest_name,
         message=message,
         image_url=None,
-        video_url=path,
+        video_url=video_url,
         audio_url=None,
         type="video"
     )
@@ -82,17 +85,15 @@ def upload_audio_memory(
     audio: UploadFile = File(...),
     db: Session = Depends(get_db)
 ):
-    filename = f"{uuid.uuid4()}_{audio.filename}"
-    path = f"{UPLOAD_DIR}/{filename}"
-    with open(path, "wb") as buffer:
-        shutil.copyfileobj(audio.file, buffer)
+    result = cloudinary.uploader.upload_large(audio.file, resource_type="video")
+    audio_url = result.get("secure_url")
 
     db_memory = MemoryModel(
         guest_name=guest_name,
         message=message,
         image_url=None,
         video_url=None,
-        audio_url=path,
+        audio_url=audio_url,
         type="audio"
     )
     db.add(db_memory)
