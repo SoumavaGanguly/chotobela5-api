@@ -19,4 +19,3 @@ class MemoryResponse(MemoryBase):
 
     class Config:
         from_attributes = True
-        orm_mode = True # For older pydantic versions, safe to have both
