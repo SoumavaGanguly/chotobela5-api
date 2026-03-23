@@ -4,6 +4,8 @@ import { Camera, ImagePlus, Send, Video, Mic, Square, Upload } from "lucide-reac
 import API from "../services/api";
 import paperTexture from "../assets/paper-texture.png";
 import { useMusic } from "../context/MusicContext";
+import { PlaySquare } from "lucide-react";
+import InstagramWall from "./InstagramWall";
 
 const BASE_URL = API.defaults.baseURL.replace("/api", "");
 
@@ -278,6 +280,7 @@ export default function MemoryWall({ text, onNavigateToEvent }) {
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("photo");
+  const [showSlider, setShowSlider] = useState(false);
 
   const fetchMemories = async () => {
     const res = await API.get("/memory");
@@ -344,108 +347,158 @@ export default function MemoryWall({ text, onNavigateToEvent }) {
         </motion.button>
       </motion.div>
 
-      {/* Upload Form */}
+      {/* Sliding Toggle Button */}
       <motion.div
-        className="glass-card p-8 md:p-10 max-w-xl mx-auto mb-20 relative overflow-hidden shadow-2xl"
-        initial={{ y: 30, opacity: 0 }}
-        whileInView={{ y: 0, opacity: 1 }}
+        className="flex items-center justify-center gap-4 mb-14"
+        initial={{ opacity: 0, y: 10 }}
+        whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ delay: 0.2 }}
+        transition={{ delay: 0.18 }}
       >
-        {/* Decorative corners */}
-        <div className="absolute top-0 left-0 w-12 h-12 border-t-4 border-l-4 border-primary/30 rounded-tl-xl m-4 pointer-events-none" />
-        <div className="absolute top-0 right-0 w-12 h-12 border-t-4 border-r-4 border-primary/30 rounded-tr-xl m-4 pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-12 h-12 border-b-4 border-l-4 border-primary/30 rounded-bl-xl m-4 pointer-events-none" />
-        <div className="absolute bottom-0 right-0 w-12 h-12 border-b-4 border-r-4 border-primary/30 rounded-br-xl m-4 pointer-events-none" />
-        <img src={paperTexture} className="absolute inset-0 w-full h-full object-cover opacity-10 pointer-events-none rounded-2xl" alt="" />
+        <span
+          onClick={() => setShowSlider(false)}
+          className={`text-lg font-bold cursor-pointer transition-colors ${!showSlider ? 'text-primary' : 'text-gray-400 hover:text-gray-600'}`}
+        >
+          Share Memory
+        </span>
 
-        {/* Shared name + message fields */}
-        <input
-          className="input-field mb-6"
-          placeholder={text.yourName}
-          value={guestName}
-          onChange={e => setGuestName(e.target.value)}
-        />
-        <textarea
-          className="input-field mb-6 resize-none h-24"
-          placeholder={text.yourWishes}
-          value={message}
-          onChange={e => setMessage(e.target.value)}
-        />
-
-        {/* Tab switcher */}
-        <div className="flex gap-2 mb-6 bg-black/5 rounded-xl p-1">
-          {TABS.map(tab => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${activeTab === tab.id ? "bg-primary text-white shadow-md" : "text-gray-600 hover:bg-white/60"}`}
-            >
-              {tab.icon} {tab.label}
-            </button>
-          ))}
+        <div
+          onClick={() => setShowSlider(!showSlider)}
+          className="w-24 h-12 bg-gray-200 rounded-full p-1 cursor-pointer flex items-center relative shadow-inner border border-gray-300"
+        >
+          <motion.div
+            className="w-10 h-10 rounded-full bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-500 shadow-md flex items-center justify-center"
+            animate={{ x: showSlider ? 48 : 0 }}
+            transition={{ type: "spring", stiffness: 500, damping: 30 }}
+          >
+            <PlaySquare className="w-5 h-5 text-white" />
+          </motion.div>
         </div>
 
-        {/* Tab content */}
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={activeTab}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.25 }}
-          >
-            {activeTab === "photo" && (
-              <div>
-                <div className="mb-8 relative mt-2 group">
-                  <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-primary/30 border-dashed rounded-xl cursor-pointer bg-white/50 hover:bg-primary/5 transition-colors duration-300">
-                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                      <ImagePlus className="w-8 h-8 mb-3 text-primary/70 group-hover:text-primary transition-colors" />
-                      <p className="mb-2 text-sm text-gray-700 font-medium">
-                        <span className="font-semibold text-primary">{text.upload}</span> {text.uploadHint}
-                      </p>
-                      <p className="text-xs text-gray-500">{image ? image.name : "SVG, PNG, JPG or GIF"}</p>
-                    </div>
-                    <input type="file" className="hidden" accept="image/*" onChange={e => setImage(e.target.files[0])} />
-                  </label>
-                </div>
-                <motion.button
-                  onClick={submitPhoto}
-                  disabled={loading || !image || !guestName || !message}
-                  className="btn-primary w-full flex items-center justify-center gap-3 py-4 text-xl"
-                  whileHover={(!loading && image && guestName && message) ? { scale: 1.02 } : {}}
-                  whileTap={(!loading && image && guestName && message) ? { scale: 0.98 } : {}}
-                >
-                  {loading ? text.uploading : <>{text.shareMemory} <Send className="w-5 h-5" /></>}
-                </motion.button>
-              </div>
-            )}
-
-            {activeTab === "video" && (
-              <VideoRecorderTab
-                text={text}
-                guestName={guestName}
-                message={message}
-                onSuccess={() => { alert("Thank you for your video memory ❤️"); fetchMemories(); }}
-              />
-            )}
-
-            {activeTab === "audio" && (
-              <AudioRecorderTab
-                text={text}
-                guestName={guestName}
-                message={message}
-                onSuccess={() => { alert("Thank you for your audio memory ❤️"); fetchMemories(); }}
-              />
-            )}
-          </motion.div>
-        </AnimatePresence>
+        <span
+          onClick={() => setShowSlider(true)}
+          className={`text-lg font-bold cursor-pointer transition-all ${showSlider ? 'text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-yellow-500' : 'text-gray-400 hover:text-gray-600'}`}
+        >
+          Instagram Wall
+        </span>
       </motion.div>
 
-      {/* Gallery */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 md:gap-10">
-        {memories.map((m, i) => <MemoryCard key={i} m={m} i={i} />)}
-      </div>
+      {/* Conditional Content based on Toggle */}
+      <AnimatePresence mode="wait">
+        {!showSlider ? (
+          <motion.div
+            key="upload-form"
+            className="glass-card p-8 md:p-10 max-w-xl mx-auto mb-20 relative overflow-hidden shadow-2xl"
+            initial={{ y: 30, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -30, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            {/* Decorative corners */}
+            <div className="absolute top-0 left-0 w-12 h-12 border-t-4 border-l-4 border-primary/30 rounded-tl-xl m-4 pointer-events-none" />
+            <div className="absolute top-0 right-0 w-12 h-12 border-t-4 border-r-4 border-primary/30 rounded-tr-xl m-4 pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-12 h-12 border-b-4 border-l-4 border-primary/30 rounded-bl-xl m-4 pointer-events-none" />
+            <div className="absolute bottom-0 right-0 w-12 h-12 border-b-4 border-r-4 border-primary/30 rounded-br-xl m-4 pointer-events-none" />
+            <img src={paperTexture} className="absolute inset-0 w-full h-full object-cover opacity-10 pointer-events-none rounded-2xl" alt="" />
+
+            {/* Shared name + message fields */}
+            <input
+              className="input-field mb-6"
+              placeholder={text.yourName}
+              value={guestName}
+              onChange={e => setGuestName(e.target.value)}
+            />
+            <textarea
+              className="input-field mb-6 resize-none h-24"
+              placeholder={text.yourWishes}
+              value={message}
+              onChange={e => setMessage(e.target.value)}
+            />
+
+            {/* Tab switcher */}
+            <div className="flex gap-2 mb-6 bg-black/5 rounded-xl p-1">
+              {TABS.map(tab => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${activeTab === tab.id ? "bg-primary text-white shadow-md" : "text-gray-600 hover:bg-white/60"}`}
+                >
+                  {tab.icon} {tab.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Tab content */}
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeTab}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.25 }}
+              >
+                {activeTab === "photo" && (
+                  <div>
+                    <div className="mb-8 relative mt-2 group">
+                      <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-primary/30 border-dashed rounded-xl cursor-pointer bg-white/50 hover:bg-primary/5 transition-colors duration-300">
+                        <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                          <ImagePlus className="w-8 h-8 mb-3 text-primary/70 group-hover:text-primary transition-colors" />
+                          <p className="mb-2 text-sm text-gray-700 font-medium">
+                            <span className="font-semibold text-primary">{text.upload}</span> {text.uploadHint}
+                          </p>
+                          <p className="text-xs text-gray-500">{image ? image.name : "SVG, PNG, JPG or GIF"}</p>
+                        </div>
+                        <input type="file" className="hidden" accept="image/*" onChange={e => setImage(e.target.files[0])} />
+                      </label>
+                    </div>
+                    <motion.button
+                      onClick={submitPhoto}
+                      disabled={loading || !image || !guestName || !message}
+                      className="btn-primary w-full flex items-center justify-center gap-3 py-4 text-xl"
+                      whileHover={(!loading && image && guestName && message) ? { scale: 1.02 } : {}}
+                      whileTap={(!loading && image && guestName && message) ? { scale: 0.98 } : {}}
+                    >
+                      {loading ? text.uploading : <>{text.shareMemory} <Send className="w-5 h-5" /></>}
+                    </motion.button>
+                  </div>
+                )}
+
+                {activeTab === "video" && (
+                  <VideoRecorderTab
+                    text={text}
+                    guestName={guestName}
+                    message={message}
+                    onSuccess={() => { alert("Thank you for your video memory ❤️"); fetchMemories(); }}
+                  />
+                )}
+
+                {activeTab === "audio" && (
+                  <AudioRecorderTab
+                    text={text}
+                    guestName={guestName}
+                    message={message}
+                    onSuccess={() => { alert("Thank you for your audio memory ❤️"); fetchMemories(); }}
+                  />
+                )}
+              </motion.div>
+            </AnimatePresence>
+          </motion.div>
+        ) : (
+          <motion.div
+            key="instagram-wall"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -30 }}
+            transition={{ duration: 0.3 }}
+            className="w-full"
+          >
+            <InstagramWall
+              memories={memories}
+              onClose={() => setShowSlider(false)}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   );
 }

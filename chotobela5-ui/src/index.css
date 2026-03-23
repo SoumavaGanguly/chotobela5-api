@@ -105,4 +105,9 @@ body {
     font-weight: 700;
     opacity: 1;
   }
+
+  .pic-grid {
+    margin-left: 5%;
+    margin-right: 5%;
+  }
 }
