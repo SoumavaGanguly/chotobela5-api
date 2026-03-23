@@ -5,6 +5,11 @@ import API from '../services/api';
 
 const BASE_URL = API.defaults.baseURL.replace("/api", "");
 
+const resolveMediaUrl = (url) => {
+    if (!url) return "";
+    return url.startsWith("http") ? url : `${BASE_URL}/${url}`;
+};
+
 export default function InstagramWall({ memories }) {
     if (!memories || memories.length === 0) return (
         <div className="w-full max-w-4xl mx-auto text-center py-20 px-4">
@@ -47,7 +52,7 @@ export default function InstagramWall({ memories }) {
                             <div className="w-full h-full relative rounded-lg overflow-hidden bg-gray-100">
                                 {m.type === 'photo' ? (
                                     m.image_url ? (
-                                        <img src={`${BASE_URL}/${m.image_url}`} alt="Memory thumbnail" className="w-full h-full object-cover" loading="lazy" />
+                                        <img src={resolveMediaUrl(m.image_url)} alt="Memory thumbnail" className="w-full h-full object-cover" loading="lazy" />
                                     ) : (
                                         <div className="w-full h-full bg-gradient-to-br from-blue-400 to-indigo-500 flex items-center justify-center p-2 text-center text-white text-xs">
                                             <Camera className="w-8 h-8 opacity-40" />
@@ -56,7 +61,7 @@ export default function InstagramWall({ memories }) {
                                 ) : null}
                                 {m.type === 'video' && (
                                     <>
-                                        <video src={`${BASE_URL}/${m.video_url}`} className="w-full h-full object-cover" preload="metadata" />
+                                        <video src={resolveMediaUrl(m.video_url)} className="w-full h-full object-cover" preload="metadata" />
                                         <div className="absolute top-2 right-2 bg-black/40 rounded-full p-1 border border-white/20">
                                             <Video className="w-4 h-4 text-white drop-shadow-md" />
                                         </div>

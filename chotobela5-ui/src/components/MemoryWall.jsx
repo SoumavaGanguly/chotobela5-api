@@ -9,6 +9,11 @@ import InstagramWall from "./InstagramWall";
 
 const BASE_URL = API.defaults.baseURL.replace("/api", "");
 
+const resolveMediaUrl = (url) => {
+  if (!url) return "";
+  return url.startsWith("http") ? url : `${BASE_URL}/${url}`;
+};
+
 // ─── Timer hook ──────────────────────────────────────────────────────
 function useTimer(maxSeconds, onExpire) {
   const [elapsed, setElapsed] = useState(0);
@@ -252,15 +257,15 @@ function MemoryCard({ m, i }) {
     >
       <div className="w-full aspect-square mb-5 overflow-hidden bg-gray-100 border border-gray-100 flex items-center justify-center">
         {m.type === "photo" && m.image_url && (
-          <img src={`${base}/${m.image_url}`} alt="Memory" className="w-full h-full object-cover" />
+          <img src={resolveMediaUrl(m.image_url)} alt="Memory" className="w-full h-full object-cover" />
         )}
         {m.type === "video" && m.video_url && (
-          <video src={`${base}/${m.video_url}`} controls className="w-full h-full object-cover" />
+          <video src={resolveMediaUrl(m.video_url)} controls className="w-full h-full object-cover" />
         )}
         {m.type === "audio" && m.audio_url && (
           <div className="flex flex-col items-center gap-3 p-4">
             <Mic className="w-12 h-12 text-primary/60" />
-            <audio src={`${base}/${m.audio_url}`} controls className="w-full" />
+            <audio src={resolveMediaUrl(m.audio_url)} controls className="w-full" />
           </div>
         )}
       </div>

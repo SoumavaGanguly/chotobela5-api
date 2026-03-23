@@ -33,8 +33,20 @@ def upload_memory(
 ):
     image_url = None
     if image:
-        result = cloudinary.uploader.upload(image.file, resource_type="image")
-        image_url = result.get("secure_url")
+        filename = f"{uuid.uuid4()}_{image.filename}"
+        path = f"{UPLOAD_DIR}/{filename}"
+        with open(path, "wb") as buffer:
+            shutil.copyfileobj(image.file, buffer)
+            
+        try:
+            result = cloudinary.uploader.upload(path, resource_type="auto")
+            image_url = result.get("secure_url")
+        except Exception as e:
+            logger.error(f"UPLOAD EXCEPTION: {e}", exc_info=True)
+            raise
+        finally:
+            if os.path.exists(path):
+                os.remove(path)
 
     db_memory = MemoryModel(
         guest_name=guest_name,
@@ -59,8 +71,17 @@ def upload_video_memory(
     video: UploadFile = File(...),
     db: Session = Depends(get_db)
 ):
-    result = cloudinary.uploader.upload_large(video.file, resource_type="video")
-    video_url = result.get("secure_url")
+    filename = f"{uuid.uuid4()}_{video.filename}"
+    path = f"{UPLOAD_DIR}/{filename}"
+    with open(path, "wb") as buffer:
+        shutil.copyfileobj(video.file, buffer)
+
+    try:
+        result = cloudinary.uploader.upload_large(path, resource_type="auto")
+        video_url = result.get("secure_url")
+    finally:
+        if os.path.exists(path):
+            os.remove(path)
 
     db_memory = MemoryModel(
         guest_name=guest_name,
@@ -85,8 +106,17 @@ def upload_audio_memory(
     audio: UploadFile = File(...),
     db: Session = Depends(get_db)
 ):
-    result = cloudinary.uploader.upload_large(audio.file, resource_type="video")
-    audio_url = result.get("secure_url")
+    filename = f"{uuid.uuid4()}_{audio.filename}"
+    path = f"{UPLOAD_DIR}/{filename}"
+    with open(path, "wb") as buffer:
+        shutil.copyfileobj(audio.file, buffer)
+
+    try:
+        result = cloudinary.uploader.upload_large(path, resource_type="auto")
+        audio_url = result.get("secure_url")
+    finally:
+        if os.path.exists(path):
+            os.remove(path)
 
     db_memory = MemoryModel(
         guest_name=guest_name,
